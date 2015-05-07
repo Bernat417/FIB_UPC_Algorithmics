@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
 
-SOURCE= graph main
+SOURCE= graph.cpp main.cpp
 MYPROGRAM= planning
 CC=g++
 
@@ -9,14 +9,6 @@ CC=g++
 
 
 all: $(MYPROGRAM)
-
-
-main: main.cpp
-    $(CC) $(CFLAGS) main.cpp
-
-
-graph: main.cpp
-    $(CC) $(CFLAGS) graph.cpp
 
 
 $(MYPROGRAM): $(SOURCE)
