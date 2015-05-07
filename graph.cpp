@@ -11,9 +11,9 @@ private:
 	adjacency_Matrix matrix;
 
 public:
-	graph(int size)
+	graph(int size, int size2)
 	{
-		matrix = adjacency_Matrix(size, vector <int> (size,0) ) ;
+		matrix = adjacency_Matrix(size, vector <int> (size2,0) ) ;
 	}
 
 	void addEdge(int x, int y, int weight)
@@ -29,6 +29,15 @@ public:
 	int weight(int x, int y)
 	{
 		return matrix[x][y];
-	}	
+	}
+
+	int numfilas()
+	{
+		return matrix.size();
+	}
 	
+	int numcolumnas()
+	{
+		return matrix[0].size();
+	}
 };
