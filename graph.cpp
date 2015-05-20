@@ -9,6 +9,7 @@ class graph
 {
 private:
 	adjacency_Matrix matrix;
+	//Necesitamos una matrix de capacidades ademas de la de vecinos.
 
 public:
 	graph(int size, int size2)
