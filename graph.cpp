@@ -10,6 +10,7 @@ class graph
 private:
 	adjacency_Matrix matrix;
 	//Necesitamos una matrix de capacidades ademas de la de vecinos.
+	//Ademas de los correspondientes getters y setters.
 
 public:
 	graph(int size, int size2)
