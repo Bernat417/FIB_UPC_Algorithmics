@@ -4,7 +4,7 @@
 
 using namespace std;
 
-typedef vector <  set<int>  > VectorOfSets;
+typedef vector <  set<float>  > VectorOfSets;
 
 class Graph
 
@@ -19,36 +19,47 @@ private:
 public:
 	int Rows, Cols;
 
-	Graph(int x, int y)
+	Graph(float x, float y)
 	{
 		Rows = x;
 		Cols = y;
-		neighbours = VectorOfSets(x, set <int>());
+		neighbours = VectorOfSets(x, set <float>());
 	}
 
-	void addEdge(int x, int y, int weight)
+	void addEdge(float x, float y, float weight)
 	{
 		neighbours[x].insert(weight);
 	}
 
-	bool conected(int x, int y)
+	bool conected(float x, float y)
 	{
 		return neighbours[x].find(y) == neighbours[x].end();
 	}
 
-	int weight(int x, int y)
+	float weight(float x, float y)
 	{
 		return *(neighbours[x].find(y));
 	}
 
-	int size()
+	float size()
 	{
 		return Rows;
 	}
 
+	vector<float> getNeighbours(int x)
+	{
+		vector <float> v (neighbours[x].size());
+		int i = 0;
+		for (set<float>::iterator it = neighbours[x].begin(); it!= neighbours[x].end(); ++it)
+		{
+			v[i] = *it;
+			++i;
+		}
+	}
+
 	void readGraph()
 	{
-		int value;
+		float value;
 		for (int i = 0; i < Rows; ++i)
 			for (int j = 0; j < Cols; ++j){
 				cin>>value;
@@ -62,7 +73,7 @@ public:
 		for (int i = 0; i < Rows; ++i)
 		{
 			cout << "----------------------------" << i <<"----------------------------" << endl;
-			for (set<int>::iterator it = neighbours[i].begin(); it!= neighbours[i].end(); ++it)
+			for (set<float>::iterator it = neighbours[i].begin(); it!= neighbours[i].end(); ++it)
 				cout << *it <<" ";
 		
 			cout<<endl;
