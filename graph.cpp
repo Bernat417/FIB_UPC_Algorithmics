@@ -9,7 +9,7 @@ typedef vector <  set<int>  > VectorOfSets;
 class Graph
 
 {
-	
+
 private:
 
 	VectorOfSets neighbours;
@@ -17,10 +17,13 @@ private:
 	//Ademas de los correspondientes getters y setters.
 
 public:
+	int Rows, Cols;
 
-	Graph(int size)
+	Graph(int x, int y)
 	{
-		neighbours = VectorOfSets(size, set <int>());
+		Rows = x;
+		Cols = y;
+		neighbours = VectorOfSets(x, set <int>());
 	}
 
 	void addEdge(int x, int y, int weight)
@@ -40,13 +43,23 @@ public:
 
 	int size()
 	{
-		return neighbours.size();
+		return Rows;
 	}
 
-	void printgraph(){
-		int n = neighbours.size();
-	
-		for (int i = 0; i < n; ++i)
+	void readGraph()
+	{
+		int value;
+		for (int i = 0; i < Rows; ++i)
+			for (int j = 0; j < Cols; ++j){
+				cin>>value;
+				if(value > 0)addEdge(i,j,value);
+			}	
+		
+	}
+
+	void printgraph()
+	{
+		for (int i = 0; i < Rows; ++i)
 		{
 			cout << "----------------------------" << i <<"----------------------------" << endl;
 			for (set<int>::iterator it = neighbours[i].begin(); it!= neighbours[i].end(); ++it)
