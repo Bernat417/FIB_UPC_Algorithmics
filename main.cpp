@@ -26,12 +26,13 @@ Matrix edmonskarp(Matrix& Ady, Matrix& Cap, int source,int sink, float& f){
 	f = 0;	
 	Matrix F (Ady.size(), vector<float> (Ady.size()));
 	float m;
-	vector <float> P;
+	int tam = Ady.size()+2; 	
+	vector<float> P (tam,-1.0);
 	//int m = bfs;
 	while (m != 0) {
 		f = f + m;
-		int v = t;
-		while (v != s){
+		int v = sink;
+		while (v != source){
 			int u = P[v];
 			F[u][v] = F[u][v] + m;
 			F[v][u] = F[v][u] - m;
@@ -43,16 +44,15 @@ Matrix edmonskarp(Matrix& Ady, Matrix& Cap, int source,int sink, float& f){
 }
 
 
-
 float minimo (float a, float b){
 	if (a>b) return b;
 	else return a;
 }
 
-/*float bfs(graph& A, int source, int sink,int tam,int flujo,vector<float>& P){
+float bfs(Matrix& Ady, Matrix& Cap, int source, int sink,int tam,Matrix& F,vector<float>& P){
 		
-	vector<float> P (tam,-1.0);
-	vector<float> M (tam)	
+
+	vector<float> M (tam);	
 	P[source] = -2;
 	M[source] = INFINITY;
 	queue<int> Q;
@@ -60,42 +60,19 @@ float minimo (float a, float b){
 	while(not Q.empty()){
 		int u = Q.front();
 		Q.pop();
-		vector <int> filaady = A.getfila(u); 
-		for(int i = 0; i<filaady.size(); ++i ){ //Para cada adyacente.
-			int v= filaady[i];
-			if (){ // Si C[u][v]-F[u][v] > 0 and P[v] == -1
-			// P[v] = u;
-			// M[v] = minimo(M[u], C[u][v]-F[u][v]);
-			// if (v != t ) Q.push(v);
-			// else return M[t];
-			//}
+		vector <float> filaady = Ady[u]; 
+		for(int i = 0; i<Ady[u].size(); ++i ){ //Para cada adyacente.
+			int v= Ady[u][i];
+			if (Cap[u][v]-F[u][v] > 0 and P[v] == -1){ // Si 
+			 P[v] = u;
+			 M[v] = minimo(M[u], Cap[u][v]-F[u][v]);
+			 if (v != sink ) Q.push(v);
+			 else return M[sink];
+			}
 		}
 	}
 	return 0;
-}*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
 
 int main() {
