@@ -22,13 +22,13 @@ void printgraph(graph& A){
 
 /*  edmons karp  */
 
-Matrix edmonskarp(Matrix Ady, Matrix Cap, int source,int sink, float& f){
+Matrix edmonskarp(Matrix& Ady, Matrix& Cap, int source,int sink, float& f){
 	f = 0;	
 	Matrix F (Ady.size(), vector<float> (Ady.size()));
 	float m;
 	vector <float> P;
-	//m = bfs;
-	if (m != 0) {
+	//int m = bfs;
+	while (m != 0) {
 		f = f + m;
 		int v = t;
 		while (v != s){
@@ -36,10 +36,12 @@ Matrix edmonskarp(Matrix Ady, Matrix Cap, int source,int sink, float& f){
 			F[u][v] = F[u][v] + m;
 			F[v][u] = F[v][u] - m;
 			v = u;		
-		}	
+		}
+		//m = bfs	
 	}
 	return F;
 }
+
 
 
 float minimo (float a, float b){
