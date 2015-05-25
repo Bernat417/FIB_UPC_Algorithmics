@@ -2,9 +2,9 @@
 
 int main() {
 	int n, m;
-	Graph G = *new Graph(n,m);
-	G.readGraph();
+	cin >> n >> m;
+	Graph G = *new Graph(n);
+	G.readGraph(m);
 	G.printgraph();
-
-	
 }	
+
