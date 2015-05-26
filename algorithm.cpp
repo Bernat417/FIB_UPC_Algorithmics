@@ -17,20 +17,19 @@ public:
 
 	float bfsflujo(Graph& A,Matrix& F,vector<float>& P)
 	{		
-		int source = A.getSource();
-		int sink = A.getSink();
+		int sink = A.size()-1;
 		int tam = A.size();
 		vector<float> M (tam);	
-		P[source] = -2;
-		M[source] = INFINITY;
+		P[0] = -2;
+		M[0] = INFINITY;
 		queue<int> Q;
-		Q.push(source);
+		Q.push(0);
 		while(not Q.empty()){
 			int u = Q.front();
 			Q.pop();
-			vector <float> filaady = A.getNeighbours(u); 
+			vector <WeightedEdge> filaady = A.getNeighbours(u); 
 			for(int i = 0; i<filaady.size(); ++i ){ //Para cada adyacente.
-				int v= filaady[i];
+				int v= filaady[i]; //Llamar a un getter.
 				if ((A.weight(u,v) - F[u][v]) > 0 and P[v] == -1){ // Si C[u][v]-F[u][v] > 0 and P[v] == -1
 					P[v] = u;
 					M[v] = min(M[u], A.weight(u,v)-F[u][v]);
@@ -53,8 +52,8 @@ public:
 		float m = bfsflujo(A,F,P);
 		while (m != 0) {
 			f = f + m;
-			int v = A.getSink();
-			while (v != A.getSource()){
+			int v = A.size()-1;
+			while (v != 0){
 				int u = P[v];
 				F[u][v] = F[u][v] + m;
 				F[v][u] = F[v][u] - m;
