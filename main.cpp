@@ -6,5 +6,5 @@ int main() {
 	Graph G = *new Graph(n);
 	G.readGraph(m);
 	G.printgraph();
-}	
+}
 

@@ -28,12 +28,12 @@ private:
 				weight = y;
 			}
 
-			bool operator<(const WeightedEdge& e) const 
+			bool operator<(const WeightedEdge& e) const
 			{
    				return neighbour < e.neighbour;  //assume that you compare the record based on a
 			}
 
-			bool operator== ( const WeightedEdge &e) 
+			bool operator== ( const WeightedEdge &e)
 			{
         		return neighbour == e.neighbour;
 			}
@@ -41,14 +41,16 @@ private:
 
 	typedef vector <  set<WeightedEdge>  > VectorOfSets;
 	VectorOfSets neighbours;
-	int numNodes;
+	int numPersons;
+	int numTrips;
 
-public:	
+public:
 
-	Graph(float x)
+	Graph(int x, int y)
 	{
-		numNodes = x;
-		neighbours = VectorOfSets(x, set <WeightedEdge>());
+		numPersons = x;
+        numTrips = y;
+		neighbours = VectorOfSets(x + y + 2, set <WeightedEdge>());
 	}
 
 	void addEdge(int x, int y, float weight)
@@ -70,7 +72,7 @@ public:
 
 	float size()
 	{
-		return numNodes;
+		return numPersons + numTrips + 2;
 	}
 
 	vector<WeightedEdge> getNeighbours(int x)
@@ -88,22 +90,31 @@ public:
 	void readGraph(int Cols)
 	{
 		float value;
-		for (int i = 0; i < numNodes; ++i)
+		int index = 0;
+		float acvalue;
+		for (int i = 0; i < numPersons + numTrips + 2; ++i) {
+            acvalue = 0.0;
 			for (int j = 0; j < Cols; ++j){
-				cin>>value;
-				if(value > 0)addEdge(i,j,value);
-			}	
-		
+				cin >> value;
+				if(value > 0) {
+                        acvalue += value;
+                        addEdge(i + 1,numPersons + index,value);
+                        addEdge(numPersons + index, numPersons + numTrips + 1, 3.0); //Es siempre 3???
+                        ++index;
+				}
+			}
+			addEdge(0, i + 1, acvalue); //Esta bien esto como peso?
+		}
 	}
 
 	void printgraph()
 	{
-		for (int i = 0; i < numNodes; ++i)
+		for (int i = 0; i < numPersons + numTrips + 2; ++i)
 		{
 			cout << "----------------------------" << i <<"----------------------------" << endl;
 			for (set<WeightedEdge>::iterator it = neighbours[i].begin(); it!= neighbours[i].end(); ++it)
 				cout << "neighbour: " << (*it).neighbour << " weight: " << (*it).weight << endl;
-		
+
 			cout<<endl;
 		}
 	}
