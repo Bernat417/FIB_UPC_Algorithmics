@@ -5,39 +5,41 @@
 using namespace std;
 
 
+class WeightedEdge
+{
+	public:
+		int neighbour;
+		float weight;
+
+		WeightedEdge()
+		{
+			neighbour = weight = 0;
+		}
+
+		WeightedEdge(int x, float y)
+		{
+			neighbour = x;
+			weight = y;
+		}
+
+		bool operator<(const WeightedEdge& e) const
+		{
+			return neighbour < e.neighbour;  //assume that you compare the record based on a
+		}
+
+		bool operator== ( const WeightedEdge &e)
+		{
+    		return neighbour == e.neighbour;
+		}
+};
+
 
 class Graph
 
 {
 
 private:
-	class WeightedEdge
-	{
-		public:
-			int neighbour;
-			float weight;
 
-			WeightedEdge()
-			{
-				neighbour = weight = 0;
-			}
-
-			WeightedEdge(int x, float y)
-			{
-				neighbour = x;
-				weight = y;
-			}
-
-			bool operator<(const WeightedEdge& e) const
-			{
-   				return neighbour < e.neighbour;  //assume that you compare the record based on a
-			}
-
-			bool operator== ( const WeightedEdge &e)
-			{
-        		return neighbour == e.neighbour;
-			}
-	};
 
 	typedef vector <  set<WeightedEdge>  > VectorOfSets;
 	VectorOfSets neighbours;
@@ -70,6 +72,14 @@ public:
 		return (*(neighbours[x].find(e))).weight;
 	}
 
+	int getneighbour(WeightedEdge x){
+		return x.neighbour;
+	}
+
+	int getNumPersonas(){
+		return numPersons;
+	}
+	
 	float size()
 	{
 		return numPersons + numTrips + 2;
@@ -90,19 +100,21 @@ public:
 	void readGraph(int Cols)
 	{
 		float value;
-		int index = 0;
+		int index = 1;
 		float acvalue;
-		for (int i = 0; i < numPersons + numTrips + 2; ++i) {
+		for (int i = 0; i < numPersons/* + numTrips + 2*/; ++i) {
             acvalue = 0.0;
 			for (int j = 0; j < Cols; ++j){
 				cin >> value;
 				if(value > 0) {
                         acvalue += value;
-                        addEdge(i + 1,numPersons + index,value);
+                        addEdge(i + 1,numPersons + 1 +j,value);
                         addEdge(numPersons + index, numPersons + numTrips + 1, 3.0); //Es siempre 3???
-                        ++index;
+
 				}
+
 			}
+            ++index;
 			addEdge(0, i + 1, acvalue); //Esta bien esto como peso?
 		}
 	}
