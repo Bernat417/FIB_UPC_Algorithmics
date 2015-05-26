@@ -1,73 +1,136 @@
-#include "graph.cpp"
-#include <queue>
-#include <cmath>
+#include <iostream>
+#include <vector>
+#include <set>
+
+using namespace std;
 
 
+class WeightedEdge
+{
+	public:
+		int neighbour;
+		float weight;
 
-typedef vector< vector<float> > Matrix;
+		WeightedEdge()
+		{
+			neighbour = weight = 0;
+		}
+
+		WeightedEdge(int x, float y)
+		{
+			neighbour = x;
+			weight = y;
+		}
+
+		bool operator<(const WeightedEdge& e) const
+		{
+			return neighbour < e.neighbour;  //assume that you compare the record based on a
+		}
+
+		bool operator== ( const WeightedEdge &e)
+		{
+    		return neighbour == e.neighbour;
+		}
+};
 
 
-/* BFS */
-
-class Algorithm
+class Graph
 
 {
 
+private:
+
+
+	typedef vector <  set<WeightedEdge>  > VectorOfSets;
+	VectorOfSets neighbours;
+	int numPersons;
+	int numTrips;
+
 public:
 
-	float bfsflujo(Graph& A,Matrix& F,vector<float>& P)
-	{		
-		int sink = A.size()-1;
-		int tam = A.size();
-		vector<float> M (tam);	
-		P[0] = -2;
-		M[0] = INFINITY;
-		queue<int> Q;
-		Q.push(0);
-		while(not Q.empty()){
-			int u = Q.front();
-			Q.pop();
-			vector <WeightedEdge> filaady = A.getNeighbours(u); 
-			for(int i = 0; i<filaady.size(); ++i ){ //Para cada adyacente.
-				int v= filaady[i]; //Llamar a un getter.
-				if ((A.weight(u,v) - F[u][v]) > 0 and P[v] == -1){ // Si C[u][v]-F[u][v] > 0 and P[v] == -1
-					P[v] = u;
-					M[v] = min(M[u], A.weight(u,v)-F[u][v]);
-					if (v != sink ) Q.push(v);
-					else return M[sink];
+	Graph(int x, int y)
+	{
+		numPersons = x;
+        numTrips = y;
+		neighbours = VectorOfSets(x + y + 2, set <WeightedEdge>());
+	}
+
+	void addEdge(int x, int y, float weight)
+	{
+		neighbours[x].insert(WeightedEdge(y,weight));
+	}
+
+	bool conected(int x, int y)
+	{
+		WeightedEdge e(y,0);
+		return neighbours[x].find(e) != neighbours[x].end();
+	}
+
+	float weight(int x, int y)
+	{
+		WeightedEdge e(y,0);
+		return (*(neighbours[x].find(e))).weight;
+	}
+
+	int getneighbour(WeightedEdge x){
+		return x.neighbour;
+	}
+
+	int getNumPersonas(){
+		return numPersons;
+	}
+	
+	float size()
+	{
+		return numPersons + numTrips + 2;
+	}
+
+	vector<WeightedEdge> getNeighbours(int x)
+	{
+		vector <WeightedEdge> v (neighbours[x].size());
+		int i = 0;
+		for (set<WeightedEdge>::iterator it = neighbours[x].begin(); it!= neighbours[x].end(); ++it)
+		{
+			v[i] = WeightedEdge ((*it).neighbour, (*it).weight);
+			++i;
+		}
+		return v;
+	}
+
+	void readGraph(int Cols)
+	{
+		float value;
+		int index = 1;
+		float acvalue;
+		for (int i = 0; i < numPersons/* + numTrips + 2*/; ++i) {
+            acvalue = 0.0;
+			for (int j = 0; j < Cols; ++j){
+				cin >> value;
+				if(value > 0) {
+                        acvalue += value;
+                        addEdge(i + 1,numPersons + 1 +j,value);
+                        addEdge(numPersons + index, numPersons + numTrips + 1, 3.0); //Es siempre 3???
+
 				}
+
 			}
+            ++index;
+			addEdge(0, i + 1, acvalue); //Esta bien esto como peso?
 		}
-		return 0;
 	}
 
-	/*  edmons karp  */
-
-
-	Matrix edmonskarp(Graph& A, float& f)
+	void printgraph()
 	{
-		f = 0;	
-		Matrix F (A.size(), vector<float> (A.size()));
-		vector <float> P(A.size(),-1);
-		float m = bfsflujo(A,F,P);
-		while (m != 0) {
-			f = f + m;
-			int v = A.size()-1;
-			while (v != 0){
-				int u = P[v];
-				F[u][v] = F[u][v] + m;
-				F[v][u] = F[v][u] - m;
-				v = u;		
-			}
-			m = bfsflujo(A,F,P);	
+		for (int i = 0; i < numPersons + numTrips + 2; ++i)
+		{
+			cout << "----------------------------" << i <<"----------------------------" << endl;
+			for (set<WeightedEdge>::iterator it = neighbours[i].begin(); it!= neighbours[i].end(); ++it)
+				cout << "neighbour: " << (*it).neighbour << " weight: " << (*it).weight << endl;
+
+			cout<<endl;
 		}
-		return F;
 	}
 
 
-	float min (float a, float b)
-	{
-		if (a>b) return b;
-		return a;
-	}
+
 };
