@@ -9,10 +9,13 @@ int main() {
 	Algorithm A = *new Algorithm();
 	float f = 0.0;
 	Matrix Res = A.edmonskarp(G,f);
-	for (int i = 0; i < Res.size(); ++i){
+	
+	cout<<f<<endl;
+	cout<<endl;
+	/*for (int i = 0; i < Res.size(); ++i){
 		for (int j = 0; j < Res.size(); ++j){
 			cout<<Res[i][j]<<" ";
 		}
 		cout<<endl;
-	}
+	}*/
 }
