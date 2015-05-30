@@ -1,9 +1,11 @@
 #include <iostream>
 #include <vector>
 #include <set>
+#include <cmath>
 
 using namespace std;
 
+typedef vector< vector<float> > Matrix;
 
 class WeightedEdge
 {
@@ -45,6 +47,7 @@ private:
 	VectorOfSets neighbours;
 	int numPersons;
 	int numTrips;
+	Matrix Entrada;
 
 public:
 
@@ -52,7 +55,9 @@ public:
 	{
 		numPersons = x;
         numTrips = y;
-		neighbours = VectorOfSets(x + y + 2, set <WeightedEdge>());
+		neighbours = VectorOfSets(x + y + 4, set <WeightedEdge>());
+		Entrada = *new Matrix(x,vector<float>(y,0.0)); 	// Lo necesitamos guardar, porque si no encontramos una solucion valida de un tipo A o B, entonces hay que rehacer el
+														// grafo para el tipo C, o sea, contamos dentro del grafo la gente con preferencia 1. 
 	}
 
 	void addEdge(int x, int y, float weight)
@@ -82,7 +87,7 @@ public:
 	
 	float size()
 	{
-		return numPersons + numTrips + 2;
+		return numPersons + numTrips + 4;
 	}
 
 	vector<WeightedEdge> getNeighbours(int x)
@@ -99,29 +104,83 @@ public:
 
 	void readGraph(int Cols)
 	{
-		float value;
-		int index = 1;
-		float acvalue;
-		for (int i = 0; i < numPersons/* + numTrips + 2*/; ++i) {
-            acvalue = 0.0;
-			for (int j = 0; j < Cols; ++j){
-				cin >> value;
-				if(value > 0) {
-                        acvalue += value;
-                        addEdge(i + 1,numPersons + 1 +j,value);
-                        addEdge(numPersons + index, numPersons + numTrips + 1, 3.0); //Es siempre 3???
 
+		int index = 2;
+
+		//------ Para las aristas -----
+		vector<float> numpersonasviaje(Cols,0.0);
+		vector<float> capacidadpersona(numPersons,0.0);
+
+		//------ Para saber que tipo de solucion tenemos (hay que volverse a mirar esto)
+		/*vector<bool> hayun3col(Cols,false);
+		int num3 = Cols;
+		tipoA = true;*/
+
+		// Tengo que leer la matriz y guardarmela por si tengo que rehacer el grafo en caso de que no encuentra una solucion de tipo A o B
+		// (de C no, porque si no hay solucion para C entonces es que no existe asignacion justa).
+		for (int i =0; i< numPersons; ++i){
+			for (int j = 0; j < Cols; ++j) {
+				float val;
+				cin>>val;
+				Entrada[i][j] = val;
+				if (val > 0){
+					++numpersonasviaje[j];
+					/*if (val == 3 and tipoA){
+						if (not hayun3col[j]) {
+							hayun3col[j] = true;
+							--num3;
+						}
+						else tipoA = false;
+					}*/
 				}
-
-			}
-            ++index;
-			addEdge(0, i + 1, acvalue); //Esta bien esto como peso?
+			}		
 		}
+		//if (num3 > 0) tipoA = false;
+		// Empezamos a montar el grafo. Tenemos las personas,los viajes un source(s) y un sink(t) y ademas necesitamos un s' y un t'
+		// para la transformacion de un grafo de circulacion con lower bounds a uno de max-flow.
+		float value;
+		float acvalue = 0;
+		bool first = true;
+		for (int i = 0; i < numPersons; ++i) {
+			acvalue = 0;				
+			for (int j = 0; j < Cols; ++j){
+				value = Entrada[i][j];
+				if(value > 0) { //Si estoy buscando una solucion de tipo A,B (value > 1) o C (value > 0).	
+					// Calculo la "capacidad" de la persona y pongo su arista de persona-viaje.
+					acvalue += 1.0/numpersonasviaje[j];		// Ejemplo transpas:  Capacidad persona 1: S1 = 1/3+1/3+1/4.Parte inferior de lS1 = 0 y la superior es uS1=1.  
+                    addEdge(i + 2,numPersons + 2 +j,1.0);	// Capacidad = parte superior de la capacidad menos parte inferior de la capacidad. La diferencia es siempre 1.					
+				}
+				if (first){
+		            addEdge(numPersons + 2+ j, numPersons + numTrips + 2, 1.0); //Anado todas las aristas de viajes a t (no a t' ).					
+				}
+			}
+			first = false;
+			capacidadpersona[i] = acvalue;
+            ++index;
+			addEdge(1, i + 2, 1.0); 
+		}		
+		addEdge(numPersons+numTrips+2,1,INFINITY); // Anado la arista del reflow.
+		addEdge(numPersons+numTrips+2,numPersons+numTrips+3,Cols);	
+		int sumabajo,sumalto,bajo,alto;
+		sumabajo = sumalto = 0;
+		// Aqui pongo todas las aristas que conectan s' con las personas suministrando su demanda.
+		// Y calculo la suma total de las partes inferiores y las superiores.
+		for (int i = 0; i < numPersons; ++i){		
+			bajo = truncf(capacidadpersona[i]);	// Trunco el valor para tener la cota inferior y luego la superior.
+			alto = bajo +1;
+			sumabajo += bajo;
+			sumalto += alto; 
+			addEdge(0,i+2,bajo);
+		}
+		// Conecto s con s' dandole como capacidad la diferencia entre la suma de partes superiores menos inferiores
+		// que es la cantidad que debe repartir edmonds-karp para proporcionarme la asignacion justa.
+		addEdge(0,1,sumalto-sumabajo);
+		addEdge(1,numPersons+numTrips+4,sumabajo);
 	}
 
 	void printgraph()
 	{
-		for (int i = 0; i < numPersons + numTrips + 2; ++i)
+		for (int i = 0; i < numPersons + numTrips + 4; ++i)
 		{
 			cout << "----------------------------" << i <<"----------------------------" << endl;
 			for (set<WeightedEdge>::iterator it = neighbours[i].begin(); it!= neighbours[i].end(); ++it)
