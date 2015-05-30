@@ -1,10 +1,10 @@
 #include "graph.cpp"
 #include <queue>
-#include <cmath>
 
 
 
-typedef vector< vector<float> > Matrix;
+
+
 
 
 /* BFS */
@@ -32,8 +32,8 @@ public:
 			int u = Q.front();
 			Q.pop();
 			vector <WeightedEdge> filaady = A.getNeighbours(u); 
-			for(int i = 0; i<filaady.size(); ++i ){ //Para cada adyacente.
-				int v= A.getneighbour(filaady[i]); //Llamar a un getter.
+			for(int i = 0; i<filaady.size(); ++i ){ 
+				int v= A.getneighbour(filaady[i]); 
 				if ((A.weight(u,v) - F[u][v]) > 0 and P[v] == -1){ // Si C[u][v]-F[u][v] > 0 and P[v] == -1
 					P[v] = u;
 					M[v] = min(M[u], A.weight(u,v)-F[u][v]);
