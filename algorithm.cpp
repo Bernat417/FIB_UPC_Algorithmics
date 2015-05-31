@@ -20,7 +20,8 @@ public:
 	}
 
 	float bfsflujo(Graph& A,Matrix& F,vector<float>& P)
-	{		
+	{	
+		P = *new vector<float>(A.size(),-1);	
 		int sink = A.size()-1;
 		int tam = A.size();
 		vector<float> M (tam);	
@@ -33,7 +34,7 @@ public:
 			Q.pop();
 			vector <WeightedEdge> filaady = A.getNeighbours(u); 
 			for(int i = 0; i<filaady.size(); ++i ){ 
-				int v= A.getneighbour(filaady[i]); 
+				int v= A.getneighbour(filaady[i]);
 				if ((A.weight(u,v) - F[u][v]) > 0 and P[v] == -1){ // Si C[u][v]-F[u][v] > 0 and P[v] == -1
 					P[v] = u;
 					M[v] = min(M[u], A.weight(u,v)-F[u][v]);
