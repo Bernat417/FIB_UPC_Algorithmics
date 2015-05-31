@@ -175,7 +175,7 @@ public:
 		// Conecto s con s' dandole como capacidad la diferencia entre la suma de partes superiores menos inferiores
 		// que es la cantidad que debe repartir edmonds-karp para proporcionarme la asignacion justa.
 		addEdge(0,1,sumalto-sumabajo);
-		addEdge(1,numPersons+numTrips+4,sumabajo);
+		addEdge(1,numPersons+numTrips+3,sumabajo);
 	}
 
 	void printgraph()
