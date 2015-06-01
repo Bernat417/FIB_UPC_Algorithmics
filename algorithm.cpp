@@ -19,6 +19,8 @@ public:
 
 	}
 
+	/*BFS*/
+
 	float bfsflujo(Graph& A,Matrix& F,vector<float>& P)
 	{	
 		P = *new vector<float>(A.size(),-1);	
@@ -66,6 +68,7 @@ public:
 			}
 			m = bfsflujo(A,F,P);	
 		}
+		cout<<endl;
 		return F;
 	}
 
