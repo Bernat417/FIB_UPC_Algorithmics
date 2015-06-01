@@ -48,6 +48,7 @@ private:
 	int numPersons;
 	int numTrips;
 	Matrix Entrada;
+	vector<float> numpersonasviaje;
 
 public:
 
@@ -108,7 +109,7 @@ public:
 		int index = 2;
 
 		//------ Para las aristas -----
-		vector<float> numpersonasviaje(Cols,0.0);
+		numpersonasviaje = *new vector<float>(Cols,0.0);
 		vector<float> capacidadpersona(numPersons,0.0);
 
 		//------ Para saber que tipo de solucion tenemos (hay que volverse a mirar esto)
@@ -145,7 +146,7 @@ public:
 			acvalue = 0;				
 			for (int j = 0; j < Cols; ++j){
 				value = Entrada[i][j];
-				if(value > 0) { //Si estoy buscando una solucion de tipo A,B (value > 1) o C (value > 0).	
+				if(value > 1) { //Si estoy buscando una solucion de tipo A,B (value > 1) o C (value > 0).	
 					// Calculo la "capacidad" de la persona y pongo su arista de persona-viaje.
 					acvalue += 1.0/numpersonasviaje[j];		// Ejemplo transpas:  Capacidad persona 1: S1 = 1/3+1/3+1/4.Parte inferior de lS1 = 0 y la superior es uS1=1.  
                     addEdge(i + 2,numPersons + 2 +j,1.0);	// Capacidad = parte superior de la capacidad menos parte inferior de la capacidad. La diferencia es siempre 1.					
@@ -175,8 +176,55 @@ public:
 		// Conecto s con s' dandole como capacidad la diferencia entre la suma de partes superiores menos inferiores
 		// que es la cantidad que debe repartir edmonds-karp para proporcionarme la asignacion justa.
 		addEdge(0,1,sumalto-sumabajo);
-		addEdge(1,numPersons+numTrips+3,sumabajo);
+		//addEdge(1,numPersons+numTrips+3,sumabajo);
 	}
+
+	void UpdateGraph(int Cols){
+		
+		int index = 2;
+
+		//------ Para las aristas -----
+		vector<float> capacidadpersona(numPersons,0.0);
+		float value;
+		float acvalue = 0;
+		bool first = true;
+		for (int i = 0; i < numPersons; ++i) {
+			acvalue = 0;				
+			for (int j = 0; j < Cols; ++j){
+				value = Entrada[i][j];
+				if(value > 0) { //Si estoy buscando una solucion de tipo A,B (value > 1) o C (value > 0).	
+					// Calculo la "capacidad" de la persona y pongo su arista de persona-viaje.
+					acvalue += 1.0/numpersonasviaje[j];		// Ejemplo transpas:  Capacidad persona 1: S1 = 1/3+1/3+1/4.Parte inferior de lS1 = 0 y la superior es uS1=1.  
+                    addEdge(i + 2,numPersons + 2 +j,1.0);	// Capacidad = parte superior de la capacidad menos parte inferior de la capacidad. La diferencia es siempre 1.					
+				}
+				if (first){
+		            addEdge(numPersons + 2+ j, numPersons + numTrips + 2, 1.0); //Anado todas las aristas de viajes a t (no a t' ).					
+				}
+			}
+			first = false;
+			capacidadpersona[i] = acvalue;
+            ++index;
+			addEdge(1, i + 2, 1.0); 
+		}		
+		addEdge(numPersons+numTrips+2,1,INFINITY); // Anado la arista del reflow.
+		addEdge(numPersons+numTrips+2,numPersons+numTrips+3,Cols);	
+		int sumabajo,sumalto,bajo,alto;
+		sumabajo = sumalto = 0;
+		// Aqui pongo todas las aristas que conectan s' con las personas suministrando su demanda.
+		// Y calculo la suma total de las partes inferiores y las superiores.
+		neighbours[0].clear();	
+		for (int i = 0; i < numPersons; ++i){				
+			bajo = truncf(capacidadpersona[i]);	// Trunco el valor para tener la cota inferior y luego la superior.
+			alto = bajo +1;
+			sumabajo += bajo;
+			sumalto += alto; 
+			addEdge(0,i+2,bajo);
+		}
+		// Conecto s con s' dandole como capacidad la diferencia entre la suma de partes superiores menos inferiores
+		// que es la cantidad que debe repartir edmonds-karp para proporcionarme la asignacion justa.
+		addEdge(0,1,sumalto-sumabajo);
+	}
+
 
 	void printgraph()
 	{
