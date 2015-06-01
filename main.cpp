@@ -9,13 +9,35 @@ int main() {
 	Algorithm A = *new Algorithm();
 	float f = 0.0;
 	Matrix Res = A.edmonskarp(G,f);
-	
-	cout<<f<<endl;
-	cout<<endl;
-	/*for (int i = 0; i < Res.size(); ++i){
-		for (int j = 0; j < Res.size(); ++j){
-			cout<<Res[i][j]<<" ";
+	vector<int> sol(m);
+	if (f == m)
+	{
+		cout<<f<<endl;		
+		for (int i = 2; i < n+2; ++i){
+			for (int j = n+2; j < m+n+2; ++j){
+				if (Res[i][j] == 1) sol[j-(n+2)] = i;
+			}
 		}
+		for (int i = 0; i < sol.size(); ++i) cout<<sol[i]-2;
 		cout<<endl;
-	}*/
+	}
+	else {
+		G.UpdateGraph(m);
+		G.printgraph();
+		f = 0.0;
+		Res = A.edmonskarp(G,f);
+		if (f == m){
+			cout<<"C"<<endl;
+			for (int i = 2; i < n+2; ++i){
+				for (int j = n+2; j < m+n+2; ++j){
+					if (Res[i][j] == 1) sol[j-(n+2)] = i;
+				}
+			}
+			for (int i = 0; i < sol.size(); ++i) cout<<sol[i]-2;
+			cout<<endl;
+		}
+		else {
+			cout<<"D"<<endl;
+		}
+	}
 }
