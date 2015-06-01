@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
 
-SOURCE= graph.cpp main.cpp
+SOURCE= graph.cpp algorithm.cpp main.cpp
 MYPROGRAM= planning
 CC=g++
 
