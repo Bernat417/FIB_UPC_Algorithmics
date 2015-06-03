@@ -1,6 +1,13 @@
 #include "algorithm.cpp"
 
-int main() {
+int main (int argc, char *argv[]) {
+	if (argc != 2) {
+		cout << "Usage of planning: planning arg1" << endl;
+		cout << "Where arg1 is either 0 or 1 to choose either:" << endl;
+		cout << "    0. EdmonsKarp Algorithm" << endl;
+		cout << "    1. Preflow Algorithm" << endl;
+		exit(0);
+	}
 	int n, m;
 	cin >> n >> m;
 	Graph G = *new Graph(n,m);
