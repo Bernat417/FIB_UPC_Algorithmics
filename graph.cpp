@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <iostream>
 #include <vector>
 #include <set>
@@ -103,7 +104,7 @@ public:
 		return v;
 	}
 
-	void readGraph(int Cols)
+	bool readGraph(int Cols)
 	{
 
 		int index = 2;
@@ -113,9 +114,9 @@ public:
 		vector<float> capacidadpersona(numPersons,0.0);
 
 		//------ Para saber que tipo de solucion tenemos (hay que volverse a mirar esto)
-		/*vector<bool> hayun3col(Cols,false);
+		vector<bool> hayun3col(Cols,false);
 		int num3 = Cols;
-		tipoA = true;*/
+		bool tipoA = true;
 
 		// Tengo que leer la matriz y guardarmela por si tengo que rehacer el grafo en caso de que no encuentra una solucion de tipo A o B
 		// (de C no, porque si no hay solucion para C entonces es que no existe asignacion justa).
@@ -126,17 +127,17 @@ public:
 				Entrada[i][j] = val;
 				if (val > 0){
 					++numpersonasviaje[j];
-					/*if (val == 3 and tipoA){
+					if (val == 3 and tipoA){
 						if (not hayun3col[j]) {
 							hayun3col[j] = true;
 							--num3;
 						}
 						else tipoA = false;
-					}*/
+					}
 				}
 			}		
 		}
-		//if (num3 > 0) tipoA = false;
+		if (num3 > 0) tipoA = false;
 		// Empezamos a montar el grafo. Tenemos las personas,los viajes un source(s) y un sink(t) y ademas necesitamos un s' y un t'
 		// para la transformacion de un grafo de circulacion con lower bounds a uno de max-flow.
 		float value;
@@ -177,6 +178,7 @@ public:
 		// que es la cantidad que debe repartir edmonds-karp para proporcionarme la asignacion justa.
 		addEdge(0,1,sumalto-sumabajo);
 		//addEdge(1,numPersons+numTrips+3,sumabajo);
+		return tipoA;
 	}
 
 	void UpdateGraph(int Cols){

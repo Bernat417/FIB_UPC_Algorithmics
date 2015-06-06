@@ -11,7 +11,7 @@ int main (int argc, char *argv[]) {
 	int n, m;
 	cin >> n >> m;
 	Graph G = *new Graph(n,m);
-	G.readGraph(m);
+	bool tipoA = G.readGraph(m);
 	G.printgraph();
 	Algorithm A = *new Algorithm();
 	float f = 0.0;
@@ -19,6 +19,9 @@ int main (int argc, char *argv[]) {
 	vector<int> sol(m);
 	if (f == m)
 	{
+		if (tipoA) cout << "A" << endl;
+		else cout << "B" << endl;
+		
 		cout<<f<<endl;		
 		for (int i = 2; i < n+2; ++i){
 			for (int j = n+2; j < m+n+2; ++j){
