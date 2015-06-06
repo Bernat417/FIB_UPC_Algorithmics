@@ -149,7 +149,8 @@ public:
 			acvalue = 0;				
 			for (int j = 0; j < Cols; ++j){
 				value = Entrada[i][j];
-				if(value == 3 or (value == 2 and !hayun3col[j])) { //Si estoy buscando una solucion de tipo A,B (value > 1) o C (value > 0).	
+				if(value > 2 or (value > 1 and !hayun3col[j])) { //Si estoy buscando una solucion de tipo A,B (value > 1) o C (value > 0).	
+					cout << "Persona: " << i << " Viatge: " << j << " " << value << endl;
 					// Calculo la "capacidad" de la persona y pongo su arista de persona-viaje.
 					acvalue += 1.0/numpersonasviaje[j];		// Ejemplo transpas:  Capacidad persona 1: S1 = 1/3+1/3+1/4.Parte inferior de lS1 = 0 y la superior es uS1=1.  
                     addEdge(i + 2,numPersons + 2 +j,1.0);	// Capacidad = parte superior de la capacidad menos parte inferior de la capacidad. La diferencia es siempre 1.					
@@ -179,7 +180,6 @@ public:
 		// Conecto s con s' dandole como capacidad la diferencia entre la suma de partes superiores menos inferiores
 		// que es la cantidad que debe repartir edmonds-karp para proporcionarme la asignacion justa.
 		addEdge(0,1,sumalto-sumabajo);
-		//addEdge(1,numPersons+numTrips+3,sumabajo);
 		return tipoA;
 	}
 	
@@ -231,7 +231,7 @@ public:
 	}
 	
 	void UpdateGraph2(int Cols){
-		
+		neighbours = VectorOfSets(numPersons + numTrips + 4, set <WeightedEdge>());
 		int index = 2;
 
 		//------ Para las aristas -----

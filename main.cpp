@@ -3,7 +3,7 @@
 int main (int argc, char *argv[]) {
 	
 	ofstream file;
-	file.open ("solucio.txt");
+	file.open ("Resultados.txt");
 	
 	int n, m;
 	cin >> n >> m;
@@ -14,8 +14,10 @@ int main (int argc, char *argv[]) {
 	float f = 0.0;
 	Matrix Res;
 	vector<int> sol(m);
+	cout << tipoA << endl;
 	if (tipoA) {
 		Res = A.edmonskarp(G,f);
+		cout << f << " " << m << endl;
 		if (f == m) {
 			file << "A" << endl;
 			//file<<f<<endl;		
