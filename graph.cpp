@@ -164,6 +164,7 @@ public:
 			}
 			first = false;
 			capacidadpersona[i] = acvalue;
+			cout << "Persona: " << i << " acvalue: " << acvalue << endl;
             ++index;
 			addEdge(1, i + 2,ceil(capacidadpersona[i]) - floor(capacidadpersona[i]));
 		}
@@ -179,10 +180,12 @@ public:
 			sumabajo += bajo;
 			sumalto += alto;
 			addEdge(0,i+2,bajo);
+			cout << "Persona: " << i << " bajo: " << bajo << " alto: " << alto << endl;
 		}
 		// Conecto s con s' dandole como capacidad la diferencia entre la suma de partes superiores menos inferiores
 		// que es la cantidad que debe repartir edmonds-karp para proporcionarme la asignacion justa.
 		addEdge(0,1,sumalto-sumabajo);
+		cout << "sumalto: " << sumalto << " sumabajo: " << sumabajo << endl;
 		return tipoA;
 	}
 
