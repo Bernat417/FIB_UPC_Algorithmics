@@ -103,7 +103,7 @@ public:
 		return v;
 	}
 
-	bool readGraph(int Cols)
+	bool readGraph(int Cols, bool& personaneg)
 	{
 
 		int index = 2;
@@ -112,10 +112,11 @@ public:
 		numpersonasviaje = *new vector<float>(Cols,0.0);
 		vector<float> capacidadpersona(numPersons,0.0);
 
-		//------ Para saber que tipo de solucion tenemos (hay que volverse a mirar esto)
+		//------ Para saber que tipo de solucion tenemos 
 		vector<bool> hayun3col(Cols,false);
-		bool tipoA = true;
-
+		bool tipoA = true;	
+		int cont = numPersons;
+		vector<bool> persnoneg(numPersons,false);
 		// Tengo que leer la matriz y guardarmela por si tengo que rehacer el grafo en caso de que no encuentra una solucion de tipo A o B
 		// (de C no, porque si no hay solucion para C entonces es que no existe asignacion justa).
 		for (int i =0; i< numPersons; ++i){
@@ -124,6 +125,10 @@ public:
 				cin>>val;
 				Entrada[i][j] = val;
 				if (val > 0){
+					if (not persnoneg[i] and val > 1) {
+						persnoneg[i] = true;	
+						--cont;
+					}
 					++numpersonasviaje[j];
 					if (val == 3){
 						if (not hayun3col[j]) {
@@ -135,7 +140,9 @@ public:
 				}
 			}
 		}
-
+	
+		if (cont > 0) personaneg = true;
+		else personaneg = false;
 		// Empezamos a montar el grafo. Tenemos las personas,los viajes un source(s) y un sink(t) y ademas necesitamos un s' y un t'
 		// para la transformacion de un grafo de circulacion con lower bounds a uno de max-flow.
 		float value;
@@ -235,7 +242,7 @@ public:
 			for (int j = 0; j < Cols; ++j){
 				value = Entrada[i][j];
                 //Si estoy buscando una solucion de tipo A,B (value > 1) o C (value > 0).
-                if(value > 1.0) {
+                if(value > 0.0) {
                     // Calculo la "capacidad" de la persona y pongo su arista de persona-viaje.
                     acvalue += 1.0/numpersonasviaje[j];		// Ejemplo transpas:  Capacidad persona 1: S1 = 1/3+1/3+1/4.Parte inferior de lS1 = 0 y la superior es uS1=1.
                     addEdge(i + 2,numPersons + 2 +j,1.0);	// Capacidad = parte superior de la capacidad menos parte inferior de la capacidad. La diferencia es siempre 1.
