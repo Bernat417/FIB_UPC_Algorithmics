@@ -2,8 +2,6 @@
 #include <vector>
 #include <set>
 #include <cmath>
-#include <fstream>
-#include <string>
 
 using namespace std;
 
@@ -116,7 +114,6 @@ public:
 
 		//------ Para saber que tipo de solucion tenemos (hay que volverse a mirar esto)
 		vector<bool> hayun3col(Cols,false);
-		//int num3 = Cols;
 		bool tipoA = true;
 
 		// Tengo que leer la matriz y guardarmela por si tengo que rehacer el grafo en caso de que no encuentra una solucion de tipo A o B
@@ -138,8 +135,7 @@ public:
 				}
 			}
 		}
-		//if (num3 > 0) tipoA = false;
-		//if (num3 != ) tipoA = false;
+
 		// Empezamos a montar el grafo. Tenemos las personas,los viajes un source(s) y un sink(t) y ademas necesitamos un s' y un t'
 		// para la transformacion de un grafo de circulacion con lower bounds a uno de max-flow.
 		float value;
@@ -150,12 +146,10 @@ public:
 			for (int j = 0; j < Cols; ++j){
 				value = Entrada[i][j];
                 //Si estoy buscando una solucion de tipo A,B (value > 1) o C (value > 0).
-                //if (value > 1) acvalue += 1.0/numpersonasviaje[j];
 				if (value > 0.0) acvalue += 1.0/numpersonasviaje[j];
-                if(value > 2.0 or (value > 1.0 and !hayun3col[j])) {
-                    cout << "Persona: " << i << " Viatge: " << j << " " << value << endl;
+                if(value == 3.0 or (value == 2.0 and !hayun3col[j])) {
                     // Calculo la "capacidad" de la persona y pongo su arista de persona-viaje.
-                    //acvalue += 1.0/numpersonasviaje[j];		// Ejemplo transpas:  Capacidad persona 1: S1 = 1/3+1/3+1/4.Parte inferior de lS1 = 0 y la superior es uS1=1.
+					// Ejemplo transpas:  Capacidad persona 1: S1 = 1/3+1/3+1/4.Parte inferior de lS1 = 0 y la superior es uS1=1.
                     addEdge(i + 2,numPersons + 2 +j,1.0);	// Capacidad = parte superior de la capacidad menos parte inferior de la capacidad. La diferencia es siempre 1.
                 }
 				if (first){
@@ -164,7 +158,6 @@ public:
 			}
 			first = false;
 			capacidadpersona[i] = acvalue;
-			cout << "Persona: " << i << " acvalue: " << acvalue << endl;
             ++index;
 			addEdge(1, i + 2,ceil(capacidadpersona[i]) - floor(capacidadpersona[i]));
 		}
@@ -180,52 +173,43 @@ public:
 			sumabajo += bajo;
 			sumalto += alto;
 			addEdge(0,i+2,bajo);
-			cout << "Persona: " << i << " bajo: " << bajo << " alto: " << alto << endl;
 		}
 		// Conecto s con s' dandole como capacidad la diferencia entre la suma de partes superiores menos inferiores
 		// que es la cantidad que debe repartir edmonds-karp para proporcionarme la asignacion justa.
 		addEdge(0,1,sumalto-sumabajo);
-		cout << "sumalto: " << sumalto << " sumabajo: " << sumabajo << endl;
 		return tipoA;
 	}
 
 	void UpdateGraph1(int Cols){
-		neighbours = VectorOfSets(numPersons + numTrips + 4, set <WeightedEdge>());
 
 		int index = 2;
-
+		neighbours[1].clear();
+		
 		//------ Para las aristas -----
 		vector<float> capacidadpersona(numPersons,0.0);
 		float value;
 		float acvalue = 0.0;
-		bool first = true;
 		for (int i = 0; i < numPersons; ++i) {
 			acvalue = 0.0;
 			for (int j = 0; j < Cols; ++j){
 				value = Entrada[i][j];
 				if (value > 0.0) acvalue += 1.0/numpersonasviaje[j];
-				if(value > 1.0) {
+				if(value == 2.0) {
                     //Si estoy buscando una solucion de tipo A,B (value > 1) o C (value > 0).
                     // Calculo la "capacidad" de la persona y pongo su arista de persona-viaje.
 					// Ejemplo transpas:  Capacidad persona 1: S1 = 1/3+1/3+1/4.Parte inferior de lS1 = 0 y la superior es uS1=1.
                     addEdge(i + 2,numPersons + 2 +j,1.0);	// Capacidad = parte superior de la capacidad menos parte inferior de la capacidad. La diferencia es siempre 1.
 				}
-				if (first){
-		            addEdge(numPersons + 2+ j, numPersons + numTrips + 2, 1.0); //Anado todas las aristas de viajes a t (no a t' ).
-				}
 			}
-			first = false;
 			capacidadpersona[i] = acvalue;
             ++index;
 			addEdge(1, i + 2,ceil(capacidadpersona[i]) - floor(capacidadpersona[i]));
 		}
-		addEdge(numPersons+numTrips+2,1,INFINITY); // Anado la arista del reflow.
-		addEdge(numPersons+numTrips+2,numPersons+numTrips+3,Cols);
 		int sumabajo,sumalto,bajo,alto;
 		sumabajo = sumalto = 0;
 		// Aqui pongo todas las aristas que conectan s' con las personas suministrando su demanda.
 		// Y calculo la suma total de las partes inferiores y las superiores.
-		//neighbours[0].clear();
+		neighbours[0].clear();
 		for (int i = 0; i < numPersons; ++i){
 			bajo = floor(capacidadpersona[i]);	// Trunco el valor para tener la cota inferior y luego la superior.
 			alto = ceil(capacidadpersona[i]);
@@ -239,40 +223,33 @@ public:
 	}
 
 	void UpdateGraph2(int Cols){
-		neighbours = VectorOfSets(numPersons + numTrips + 4, set <WeightedEdge>());
 		int index = 2;
-
+		neighbours[1].clear();
+		
 		//------ Para las aristas -----
 		vector<float> capacidadpersona(numPersons,0.0);
 		float value;
 		float acvalue = 0.0;
-		bool first = true;
 		for (int i = 0; i < numPersons; ++i) {
 			acvalue = 0.0;
 			for (int j = 0; j < Cols; ++j){
 				value = Entrada[i][j];
                 //Si estoy buscando una solucion de tipo A,B (value > 1) o C (value > 0).
-                if(value > 0.0) {
+                if(value > 1.0) {
                     // Calculo la "capacidad" de la persona y pongo su arista de persona-viaje.
                     acvalue += 1.0/numpersonasviaje[j];		// Ejemplo transpas:  Capacidad persona 1: S1 = 1/3+1/3+1/4.Parte inferior de lS1 = 0 y la superior es uS1=1.
                     addEdge(i + 2,numPersons + 2 +j,1.0);	// Capacidad = parte superior de la capacidad menos parte inferior de la capacidad. La diferencia es siempre 1.
                 }
-				if (first){
-		            addEdge(numPersons + 2+ j, numPersons + numTrips + 2, 1.0); //Anado todas las aristas de viajes a t (no a t' ).
-				}
 			}
-			first = false;
 			capacidadpersona[i] = acvalue;
             ++index;
 			addEdge(1, i + 2,ceil(capacidadpersona[i]) - floor(capacidadpersona[i]));
 		}
-		addEdge(numPersons+numTrips+2,1,INFINITY); // Anado la arista del reflow.
-		addEdge(numPersons+numTrips+2,numPersons+numTrips+3,Cols);
 		int sumabajo,sumalto,bajo,alto;
 		sumabajo = sumalto = 0;
 		// Aqui pongo todas las aristas que conectan s' con las personas suministrando su demanda.
 		// Y calculo la suma total de las partes inferiores y las superiores.
-		//neighbours[0].clear();
+		neighbours[0].clear();
 		for (int i = 0; i < numPersons; ++i){
 			bajo = floor(capacidadpersona[i]);	// Trunco el valor para tener la cota inferior y luego la superior.
 			alto = ceil(capacidadpersona[i]);

@@ -1,17 +1,7 @@
 #include "graph.cpp"
 #include <queue>
 
-
-
-
-
-
-
-/* BFS */
-
-class Algorithm
-
-{
+class Algorithm {
 
 public:
 
@@ -20,7 +10,6 @@ public:
 	}
 	
 	//--------------- EDMONDS-KARP ----------------//
-
 	/*BFS*/
 
 	float bfsflujo(Graph& A,Matrix& F,vector<float>& P)
@@ -50,7 +39,6 @@ public:
 
 	/*  edmons karp  */
 
-
 	Matrix edmonskarp(Graph& A, float& f)
 	{
 		f = 0;	
@@ -72,7 +60,6 @@ public:
 		return F;
 	}
 
-
 	float min (float a, float b)
 	{
 		if (a>b) return b;
@@ -80,7 +67,7 @@ public:
 	}
 
 	//--------------- PUSH-RELABEL ----------------//
-
+	
 //links con info (borrarlo luego)
 //http://en.wikipedia.org/wiki/Push%E2%80%93relabel_maximum_flow_algorithm
 //https://sites.google.com/site/indy256/algo/preflow
@@ -143,36 +130,5 @@ public:
 		}
 		return F;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 };
