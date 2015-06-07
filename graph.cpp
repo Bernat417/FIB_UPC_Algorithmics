@@ -143,15 +143,16 @@ public:
 		// Empezamos a montar el grafo. Tenemos las personas,los viajes un source(s) y un sink(t) y ademas necesitamos un s' y un t'
 		// para la transformacion de un grafo de circulacion con lower bounds a uno de max-flow.
 		float value;
-		float acvalue = 0;
+		float acvalue = 0.0;
 		bool first = true;
 		for (int i = 0; i < numPersons; ++i) {
-			acvalue = 0;
+			acvalue = 0.0;
 			for (int j = 0; j < Cols; ++j){
 				value = Entrada[i][j];
                 //Si estoy buscando una solucion de tipo A,B (value > 1) o C (value > 0).
-                if (value > 0) acvalue += 1.0/numpersonasviaje[j];
-                if(value > 2 or (value > 1 and !hayun3col[j])) {
+                //if (value > 1) acvalue += 1.0/numpersonasviaje[j];
+				if (value > 0.0) acvalue += 1.0/numpersonasviaje[j];
+                if(value > 2.0 or (value > 1.0 and !hayun3col[j])) {
                     cout << "Persona: " << i << " Viatge: " << j << " " << value << endl;
                     // Calculo la "capacidad" de la persona y pongo su arista de persona-viaje.
                     //acvalue += 1.0/numpersonasviaje[j];		// Ejemplo transpas:  Capacidad persona 1: S1 = 1/3+1/3+1/4.Parte inferior de lS1 = 0 y la superior es uS1=1.
@@ -164,7 +165,7 @@ public:
 			first = false;
 			capacidadpersona[i] = acvalue;
             ++index;
-			addEdge(1, i + 2, 1.0);
+			addEdge(1, i + 2,ceil(capacidadpersona[i]) - floor(capacidadpersona[i]));
 		}
 		addEdge(numPersons+numTrips+2,1,INFINITY); // Anado la arista del reflow.
 		addEdge(numPersons+numTrips+2,numPersons+numTrips+3,Cols); //Arista de t a t'
@@ -173,8 +174,8 @@ public:
 		// Aqui pongo todas las aristas que conectan s' con las personas suministrando su demanda.
 		// Y calculo la suma total de las partes inferiores y las superiores.
 		for (int i = 0; i < numPersons; ++i){
-			bajo = truncf(capacidadpersona[i]);	// Trunco el valor para tener la cota inferior y luego la superior.
-			alto = bajo +1;
+			bajo = floor(capacidadpersona[i]);	// Trunco el valor para tener la cota inferior y luego la superior.
+			alto = ceil(capacidadpersona[i]);
 			sumabajo += bajo;
 			sumalto += alto;
 			addEdge(0,i+2,bajo);
@@ -199,11 +200,11 @@ public:
 			acvalue = 0.0;
 			for (int j = 0; j < Cols; ++j){
 				value = Entrada[i][j];
-				if (value > 0) acvalue += 1.0/numpersonasviaje[j];
-				if(value > 1) {
+				if (value > 0.0) acvalue += 1.0/numpersonasviaje[j];
+				if(value > 1.0) {
                     //Si estoy buscando una solucion de tipo A,B (value > 1) o C (value > 0).
                     // Calculo la "capacidad" de la persona y pongo su arista de persona-viaje.
-                    //acvalue += 1.0/numpersonasviaje[j];		// Ejemplo transpas:  Capacidad persona 1: S1 = 1/3+1/3+1/4.Parte inferior de lS1 = 0 y la superior es uS1=1.
+					// Ejemplo transpas:  Capacidad persona 1: S1 = 1/3+1/3+1/4.Parte inferior de lS1 = 0 y la superior es uS1=1.
                     addEdge(i + 2,numPersons + 2 +j,1.0);	// Capacidad = parte superior de la capacidad menos parte inferior de la capacidad. La diferencia es siempre 1.
 				}
 				if (first){
@@ -213,7 +214,7 @@ public:
 			first = false;
 			capacidadpersona[i] = acvalue;
             ++index;
-			addEdge(1, i + 2, 1.0);
+			addEdge(1, i + 2,ceil(capacidadpersona[i]) - floor(capacidadpersona[i]));
 		}
 		addEdge(numPersons+numTrips+2,1,INFINITY); // Anado la arista del reflow.
 		addEdge(numPersons+numTrips+2,numPersons+numTrips+3,Cols);
@@ -221,10 +222,10 @@ public:
 		sumabajo = sumalto = 0;
 		// Aqui pongo todas las aristas que conectan s' con las personas suministrando su demanda.
 		// Y calculo la suma total de las partes inferiores y las superiores.
-		neighbours[0].clear();
+		//neighbours[0].clear();
 		for (int i = 0; i < numPersons; ++i){
-			bajo = truncf(capacidadpersona[i]);	// Trunco el valor para tener la cota inferior y luego la superior.
-			alto = bajo +1;
+			bajo = floor(capacidadpersona[i]);	// Trunco el valor para tener la cota inferior y luego la superior.
+			alto = ceil(capacidadpersona[i]);
 			sumabajo += bajo;
 			sumalto += alto;
 			addEdge(0,i+2,bajo);
@@ -241,14 +242,14 @@ public:
 		//------ Para las aristas -----
 		vector<float> capacidadpersona(numPersons,0.0);
 		float value;
-		float acvalue = 0;
+		float acvalue = 0.0;
 		bool first = true;
 		for (int i = 0; i < numPersons; ++i) {
-			acvalue = 0;
+			acvalue = 0.0;
 			for (int j = 0; j < Cols; ++j){
 				value = Entrada[i][j];
                 //Si estoy buscando una solucion de tipo A,B (value > 1) o C (value > 0).
-                if(value > 0) {
+                if(value > 0.0) {
                     // Calculo la "capacidad" de la persona y pongo su arista de persona-viaje.
                     acvalue += 1.0/numpersonasviaje[j];		// Ejemplo transpas:  Capacidad persona 1: S1 = 1/3+1/3+1/4.Parte inferior de lS1 = 0 y la superior es uS1=1.
                     addEdge(i + 2,numPersons + 2 +j,1.0);	// Capacidad = parte superior de la capacidad menos parte inferior de la capacidad. La diferencia es siempre 1.
@@ -260,7 +261,7 @@ public:
 			first = false;
 			capacidadpersona[i] = acvalue;
             ++index;
-			addEdge(1, i + 2, 1.0);
+			addEdge(1, i + 2,ceil(capacidadpersona[i]) - floor(capacidadpersona[i]));
 		}
 		addEdge(numPersons+numTrips+2,1,INFINITY); // Anado la arista del reflow.
 		addEdge(numPersons+numTrips+2,numPersons+numTrips+3,Cols);
@@ -268,10 +269,10 @@ public:
 		sumabajo = sumalto = 0;
 		// Aqui pongo todas las aristas que conectan s' con las personas suministrando su demanda.
 		// Y calculo la suma total de las partes inferiores y las superiores.
-		neighbours[0].clear();
+		//neighbours[0].clear();
 		for (int i = 0; i < numPersons; ++i){
-			bajo = truncf(capacidadpersona[i]);	// Trunco el valor para tener la cota inferior y luego la superior.
-			alto = bajo +1;
+			bajo = floor(capacidadpersona[i]);	// Trunco el valor para tener la cota inferior y luego la superior.
+			alto = ceil(capacidadpersona[i]);
 			sumabajo += bajo;
 			sumalto += alto;
 			addEdge(0,i+2,bajo);

@@ -15,9 +15,10 @@ int main (int argc, char *argv[]) {
 	Matrix Res;
 	vector<int> sol(m);
 	cout << tipoA << endl;
-	tipoA = false;
+	//tipoA = false;
 	if (tipoA) {
-		Res = A.edmonskarp(G,f);
+		//Res = A.edmonskarp(G,f);
+		Res = A.preflow(G,f);
 		G.printgraph();
 		cout << f << " " << m << endl;
 		if (f == m) {
@@ -39,8 +40,10 @@ int main (int argc, char *argv[]) {
 	G.UpdateGraph1(m);
 	//G.printgraph();
 	f = 0.0;
-	Res = A.edmonskarp(G,f);
-	if (false /*f == m*/) {
+	//Res = A.edmonskarp(G,f);
+	Res = A.preflow(G,f);
+	cout << f << " " << m << endl;
+	if (f == m) {
 		file << "B" << endl;
 		//file<<f<<endl;
 		for (int i = 2; i < n+2; ++i){
@@ -58,7 +61,8 @@ int main (int argc, char *argv[]) {
 		G.UpdateGraph2(m);
 		//G.printgraph();
 		f = 0.0;
-		Res = A.edmonskarp(G,f);
+		//Res = A.edmonskarp(G,f);
+		Res = A.preflow(G,f);
 		if (f == m){
 			file<<"C"<<endl;
 			for (int i = 2; i < n+2; ++i){
