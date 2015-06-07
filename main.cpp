@@ -1,26 +1,28 @@
 #include "algorithm.cpp"
 
 int main (int argc, char *argv[]) {
-	
+
 	ofstream file;
 	file.open ("Resultados.txt");
-	
+
 	int n, m;
 	cin >> n >> m;
 	Graph G = *new Graph(n,m);
 	bool tipoA = G.readGraph(m);
-	//G.printgraph();
+	G.printgraph();
 	Algorithm A = *new Algorithm();
 	float f = 0.0;
 	Matrix Res;
 	vector<int> sol(m);
 	cout << tipoA << endl;
+	tipoA = false;
 	if (tipoA) {
 		Res = A.edmonskarp(G,f);
+		G.printgraph();
 		cout << f << " " << m << endl;
 		if (f == m) {
 			file << "A" << endl;
-			//file<<f<<endl;		
+			//file<<f<<endl;
 			for (int i = 2; i < n+2; ++i){
 				for (int j = n+2; j < m+n+2; ++j){
 					if (Res[i][j] == 1) sol[j-(n+2)] = i;
@@ -33,13 +35,14 @@ int main (int argc, char *argv[]) {
 			return 0;
 		}
 	}
+	cout << "No A 4 U" << endl;
 	G.UpdateGraph1(m);
 	//G.printgraph();
 	f = 0.0;
 	Res = A.edmonskarp(G,f);
-	if (f == m) {
+	if (false /*f == m*/) {
 		file << "B" << endl;
-		//file<<f<<endl;		
+		//file<<f<<endl;
 		for (int i = 2; i < n+2; ++i){
 			for (int j = n+2; j < m+n+2; ++j){
 				if (Res[i][j] == 1) sol[j-(n+2)] = i;
