@@ -16,12 +16,14 @@ int main (int argc, char *argv[]) {
 	int n, m;
 	cin >> n >> m;
 	Graph G = *new Graph(n,m);
-	bool tipoA = G.readGraph(m);
+	bool personaneg;
+	bool tipoA = G.readGraph(m,personaneg);
 	//G.printgraph();
 	Algorithm A = *new Algorithm();
 	float f = 0.0;
 	Matrix Res;
-	if (tipoA) {
+	if (not personaneg) {
+	if (tipoA and not personaneg) {
 		Res = A.edmonskarp(G,f);
 		//G.printgraph();
 		if (f == m) {
@@ -34,10 +36,11 @@ int main (int argc, char *argv[]) {
 	//G.printgraph();
 	f = 0.0;
 	Res = A.edmonskarp(G,f);
-	if (f == m) {
+	if (f == m and not personaneg) {
 		cout << "B" << endl;
 		printSol(n, m, Res);
 		return 0;
+	}
 	}
 	else {
 		G.UpdateGraph2(m);
