@@ -33,9 +33,13 @@ int main (int argc, char *argv[]) {
 		{
 			Res = A.edmonskarp(G,f);
 			//G.printgraph();
-			if (f == m) printSol(n, m, Res, 'A');	
+			if (f == m)
+			{
+				printSol(n, m, Res, 'A');
+				tipoA = false;	
+			}
 		}
-		else 
+		if(!tipoA)
 		{
 			G.UpdateGraph(1);
 			//G.printgraph();
@@ -53,3 +57,4 @@ int main (int argc, char *argv[]) {
 		else cout << "D" << endl;
 	}
 }
+
