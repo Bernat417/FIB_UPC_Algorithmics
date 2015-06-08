@@ -35,11 +35,14 @@ int main (int argc, char *argv[]) {
 			//G.printgraph();
 			if (f == m) printSol(n, m, Res, 'A');	
 		}
-		G.UpdateGraph(1);
-		//G.printgraph();
-		f = 0.0;
-		Res = A.edmonskarp(G,f);
-		if (f == m)printSol(n, m, Res, 'B');
+		else 
+		{
+			G.UpdateGraph(1);
+			//G.printgraph();
+			f = 0.0;
+			Res = A.edmonskarp(G,f);
+			if (f == m)printSol(n, m, Res, 'B');
+		}
 	}
 	else {
 		G.UpdateGraph(2);
