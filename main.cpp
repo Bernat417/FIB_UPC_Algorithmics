@@ -33,11 +33,8 @@ int main (int argc, char *argv[]) {
 		{
 			Res = A.edmonskarp(G,f);
 			//G.printgraph();
-			if (f == m)
-			{
-				printSol(n, m, Res, 'A');
-				tipoA = false;	
-			}
+			if (f == m) printSol(n, m, Res, 'A');
+			else tipoA = false;	
 		}
 		if(!tipoA)
 		{
@@ -57,4 +54,5 @@ int main (int argc, char *argv[]) {
 		else cout << "D" << endl;
 	}
 }
+
 
