@@ -1,6 +1,6 @@
 #!/bin/bash
-rm Resultados.txt
-touch Resultados.txt
+rm Resultado.txt
+touch Resultado.txt
 for file in *
 do
 	echo "$file"
