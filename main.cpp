@@ -33,7 +33,10 @@ int main (int argc, char *argv[]) {
 		{
 			Res = A.edmonskarp(G,f);
 			//G.printgraph();
-			if (f == m) printSol(n, m, Res, 'A');
+			if (f == m) { 
+				cout << "A" << endl; //printSol(n, m, Res, 'A');
+				return 0;
+			}
 			else tipoA = false;	
 		}
 		if(!tipoA)
@@ -42,17 +45,18 @@ int main (int argc, char *argv[]) {
 			//G.printgraph();
 			f = 0.0;
 			Res = A.edmonskarp(G,f);
-			if (f == m)printSol(n, m, Res, 'B');
+			if (f == m) {
+				cout << "B" << endl; //printSol(n, m, Res, 'B');
+				return 0;
+			}
 		}
 	}
-	else {
-		G.UpdateGraph(2);
-		//G.printgraph();
-		f = 0.0;
-		Res = A.edmonskarp(G,f);
-		if (f == m) printSol(n, m, Res, 'C');
-		else cout << "D" << endl;
-	}
+	G.UpdateGraph(2);
+	//G.printgraph();
+	f = 0.0;
+	Res = A.edmonskarp(G,f);
+	if (f == m) cout << "C" << endl; //printSol(n, m, Res, 'C');
+	else cout << "D" << endl; //cout << "D" << endl;
 }
 
 
