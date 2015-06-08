@@ -55,11 +55,10 @@ public:
 
 	Graph(int x, int y)
 	{
-		
-		hayun3col = *new vector<bool>(numTrips,false);
 		numPersons = x;
         numTrips = y;
 		neighbours = VectorOfSets(x + y + 4, set <WeightedEdge>());
+		hayun3col = *new vector<bool>(numTrips,false);
 		Entrada = *new Matrix(x,vector<float>(y,0.0)); 	// Lo necesitamos guardar, porque si no encontramos una solucion valida de un tipo A o B, entonces hay que rehacer el
 														// grafo para el tipo C, o sea, contamos dentro del grafo la gente con preferencia 1.
 	}
